@@ -9,11 +9,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'mysql',
-        host: '111.229.124.159',
+        host: 'localhost',
         port: 3306,
-        username: 'codePreview',
-        password: 'codePreview147',
-        database: 'codepreview',
+        username: '1',
+        password: '1',
+        database: '1',
         timezone: '+08:00',
         charset: 'utf8mb4',
         // entities: ['dist/**/*.entity{.ts,.js}'],
