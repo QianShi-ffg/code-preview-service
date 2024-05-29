@@ -3,17 +3,24 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DemoModule } from './modules/demo/demo.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // 设置为全局模块，所有模块都可以直接使用
+      envFilePath: '.env', // 指定.env文件路径
+    }),
     TypeOrmModule.forRootAsync({
-      useFactory: () => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        username: '1',
-        password: '1',
-        database: '1',
+        host: configService.get<string>('DATABASE_HOST'),
+        port: configService.get<number>('DATABASE_PORT'),
+        username: configService.get<string>('DATABASE_USER'),
+        password: configService.get<string>('DATABASE_PASSWORD'),
+        database: configService.get<string>('DATABASE_NAME'),
         timezone: '+08:00',
         charset: 'utf8mb4',
         // entities: ['dist/**/*.entity{.ts,.js}'],
