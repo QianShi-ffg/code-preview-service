@@ -18,38 +18,27 @@ import { LoginGuard } from 'src/login.guard';
 export class DemoController {
   constructor(private readonly demoService: DemoService) {}
 
-  // @Post()
-  // create(@Body() createDemoDto: CreateDemoDto) {
-  //   return this.demoService.create(createDemoDto);
-  // }
+  @Post()
+  create(@Body() createDemoDto: CreateDemoDto) {
+    return this.demoService.create(createDemoDto);
+  }
 
   @Get()
   // @UseGuards(LoginGuard)
-  async findAll(@Query() query: any) {
-    const res = await this.demoService.findAll(query);
-    console.log(res);
-    return {
-      code: 200,
-      message: 'success',
-      data: res,
-      // total: Number(res1.count),
-    };
+  findAll(@Query() query: any) {
+    return this.demoService.findAll(query);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const res = await this.demoService.findOne(+id);
-    return {
-      code: 200,
-      message: 'success',
-      data: res,
-    };
+  findOne(@Param('id') id: string) {
+    return this.demoService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateDemoDto: UpdateDemoDto) {
-  //   return this.demoService.update(+id, updateDemoDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateDemoDto: UpdateDemoDto) {
+    console.log('aaaaaaaaaaaaaaaaa');
+    return this.demoService.update(+id, updateDemoDto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

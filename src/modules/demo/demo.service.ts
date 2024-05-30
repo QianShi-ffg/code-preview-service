@@ -4,17 +4,24 @@ import { Repository } from 'typeorm';
 import { CreateDemoDto } from './dto/create-demo.dto';
 import { UpdateDemoDto } from './dto/update-demo.dto';
 import { Demo } from './entities/demo.entity';
-
+import { CustomException } from '../../exceptions/custom.exception';
 @Injectable()
+// @UseFilters(NotFoundFilter)
 export class DemoService {
   constructor(
     @InjectRepository(Demo)
     private DemoRepository: Repository<Demo>,
   ) {}
-
-  // create(createDemoDto: CreateDemoDto) {
-  //   return 'This action adds a new demo';
-  // }
+  async create(createDemoDto: CreateDemoDto) {
+    console.log(createDemoDto);
+    const { name } = createDemoDto;
+    const res = await this.DemoRepository.findOne({ where: { name } });
+    if (res) {
+      throw new CustomException('Demo名称重复', 200);
+    } else {
+      return this.DemoRepository.save(createDemoDto);
+    }
+  }
 
   findAll(query) {
     const { page, pageSize, sort } = query;
@@ -29,19 +36,15 @@ export class DemoService {
   }
 
   findOne(id: number) {
-    return (
-      this.DemoRepository.createQueryBuilder('demo')
-        // .orderBy('id', sort)
-        // .skip((page - 1) * pageSize)
-        // .take(pageSize)
-        .where('demo.id = :id', { id: id })
-        .getOne()
-    );
+    return this.DemoRepository.createQueryBuilder('demo')
+      .where('demo.id = :id', { id: id })
+      .getOne();
   }
 
-  // update(id: number, updateDemoDto: UpdateDemoDto) {
-  //   return `This action updates a #${id} demo`;
-  // }
+  update(id: number, updateDemoDto: UpdateDemoDto) {
+    console.log(id, updateDemoDto);
+    return this.DemoRepository.update(id, updateDemoDto);
+  }
 
   remove(id: number) {
     return `This action removes a #${id} demo`;
