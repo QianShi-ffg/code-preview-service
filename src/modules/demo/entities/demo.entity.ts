@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class Demo {
@@ -40,4 +42,7 @@ export class Demo {
 
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updataTime: Date;
+
+  @ManyToOne(() => User, (user) => user.id)
+  user: User;
 }

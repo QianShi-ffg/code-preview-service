@@ -5,12 +5,14 @@ import { CreateDemoDto } from './dto/create-demo.dto';
 import { UpdateDemoDto } from './dto/update-demo.dto';
 import { Demo } from './entities/demo.entity';
 import { CustomException } from '../../exceptions/custom.exception';
+import { UserService } from '../user/user.service';
 @Injectable()
 // @UseFilters(NotFoundFilter)
 export class DemoService {
   constructor(
     @InjectRepository(Demo)
     private DemoRepository: Repository<Demo>,
+    private readonly userService: UserService,
   ) {}
   async create(createDemoDto: CreateDemoDto) {
     console.log(createDemoDto);
@@ -48,5 +50,19 @@ export class DemoService {
 
   remove(id: number) {
     return `This action removes a #${id} demo`;
+  }
+
+  findPostsByUser(userId: number): Promise<Demo[]> {
+    return this.DemoRepository.find({
+      where: { user: { id: userId } },
+    });
+  }
+
+  async isDemoBelongsToUser(demoId: number, userId: number): Promise<boolean> {
+    const res = await this.DemoRepository.findOne({
+      where: { id: demoId, user: { id: userId } },
+    });
+    console.log(res);
+    return !!res;
   }
 }
