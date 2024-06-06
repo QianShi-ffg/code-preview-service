@@ -35,7 +35,7 @@ export class Demo {
   jsLanguage: string;
 
   @Column({ nullable: true })
-  desc: string;
+  description: string;
 
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   createTime: Date;

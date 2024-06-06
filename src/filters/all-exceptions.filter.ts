@@ -11,7 +11,7 @@ import { CustomException } from '../exceptions/custom.exception';
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
-    console.log(exception,host)
+    console.log(exception, host);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
@@ -37,6 +37,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
     };
 
-    response.status(errorCode).json(errorResponse);
+    response.status(200).json(errorResponse);
   }
 }

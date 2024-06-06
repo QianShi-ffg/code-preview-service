@@ -8,11 +8,11 @@ import { APP_GUARD } from '@nestjs/core';
 import { Demo } from './entities/demo.entity';
 import { UserModule } from '../user/user.module';
 @Module({
-  imports: [TypeOrmModule.forFeature([Demo]), UserModule],
+  imports: [TypeOrmModule.forFeature([Demo])],
   controllers: [DemoController],
   providers: [
     DemoService,
-    UserService,
+    // UserService,
     // {
     //   provide: APP_GUARD,
     //   useClass: LoginGuard,

@@ -5,14 +5,14 @@ import { CreateDemoDto } from './dto/create-demo.dto';
 import { UpdateDemoDto } from './dto/update-demo.dto';
 import { Demo } from './entities/demo.entity';
 import { CustomException } from '../../exceptions/custom.exception';
-import { UserService } from '../user/user.service';
+// import { UserService } from '../user/user.service';
 @Injectable()
 // @UseFilters(NotFoundFilter)
 export class DemoService {
   constructor(
     @InjectRepository(Demo)
     private DemoRepository: Repository<Demo>,
-    private readonly userService: UserService,
+    // private readonly userService: UserService,
   ) {}
   async create(createDemoDto: CreateDemoDto) {
     console.log(createDemoDto);
@@ -29,7 +29,7 @@ export class DemoService {
     const { page, pageSize, sort } = query;
     return (
       this.DemoRepository.createQueryBuilder('demo')
-        .select(['demo.id', 'demo.name', 'demo.desc', 'demo.updataTime'])
+        .select(['demo.id', 'demo.name', 'demo.description', 'demo.updataTime'])
         // .orderBy('id', sort)
         // .skip((page - 1) * pageSize)
         // .take(pageSize)
@@ -38,9 +38,26 @@ export class DemoService {
   }
 
   findOne(id: number) {
+    // return this.DemoRepository.findOne({
+    //   where: { id },
+    //   relations: ['user'], // typeorm默认不查询关联信息,需要设置
+    // });
     return this.DemoRepository.createQueryBuilder('demo')
-      .where('demo.id = :id', { id: id })
-      .getOne();
+      .leftJoinAndSelect('demo.user', 'user') // 加入 user 关系
+      .select([
+        'demo.id as id',
+        'demo.name as name',
+        'demo.html as html',
+        'demo.css as css',
+        'demo.javascript as javascript',
+        'demo.htmlLanguage as htmlLanguage',
+        'demo.cssLanguage as cssLanguage',
+        'demo.jsLanguage as jsLanguage',
+        'demo.description as description',
+        'user.id as userId', // 选择 user 的 id
+      ])
+      .where('demo.id = :id', { id })
+      .getRawOne();
   }
 
   update(id: number, updateDemoDto: UpdateDemoDto) {
