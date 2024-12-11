@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
   Query,
 } from '@nestjs/common';
 import { DemoService } from './demo.service';
@@ -43,6 +44,11 @@ export class DemoController {
     console.log(12312321, demoId, userId);
     const belongsTo = this.demoService.isDemoBelongsToUser(demoId, userId);
     return belongsTo;
+  }
+
+  @Post('running')
+  running(@Body() createDemoDto: CreateDemoDto, @Req() req) {
+    return this.demoService.running(createDemoDto, req);
   }
 
   @Post()

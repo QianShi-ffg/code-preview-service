@@ -5,7 +5,9 @@ import { CreateDemoDto } from './dto/create-demo.dto';
 import { UpdateDemoDto } from './dto/update-demo.dto';
 import { Demo } from './entities/demo.entity';
 import { CustomException } from '../../exceptions/custom.exception';
-// import { UserService } from '../user/user.service';
+import * as babel from '@babel/core';
+import '@babel/preset-env';
+
 @Injectable()
 // @UseFilters(NotFoundFilter)
 export class DemoService {
@@ -81,5 +83,47 @@ export class DemoService {
     });
     console.log(res);
     return !!res;
+  }
+
+  async running(createDemoDto: CreateDemoDto, req: any) {
+    console.log(
+      req.headers['sec-ch-ua'],
+      'headersheadersheadersheadersheadersheaders',
+    );
+    const { javascript } = createDemoDto;
+    let babelConfig: any = {
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              esmodules: true,
+            },
+            modules: false,
+            loose: false,
+            useBuiltIns: 'usage',
+            corejs: 3,
+            include: [
+              'transform-arrow-functions'
+            ],
+            exclude: ['transform-async-to-generator', 'transform-block-scoping'], 
+            shippedProposals: false,
+            bugfixes: false,
+            forceAllTransforms: false,
+            ignoreBrowserslistConfig: false,
+            debug: false,
+          },
+        ],
+      ],
+    };
+    // babelConfig.presets[0][1].targets.browsers = [`${browserInfo.browser.name} ${browserInfo.browser.version}`]
+    // babelConfig.presets[0][1].targets.browsers = [`${browserInfo.browser.name} ${browserInfo.browser.version}`]
+    const result = await babel.transform(javascript, babelConfig);
+
+    return [
+      {
+        javascript: result,
+      },
+    ];
   }
 }
