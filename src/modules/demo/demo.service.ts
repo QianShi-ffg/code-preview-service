@@ -17,7 +17,6 @@ export class DemoService {
     // private readonly userService: UserService,
   ) {}
   async create(createDemoDto: CreateDemoDto) {
-    console.log(createDemoDto);
     const { name } = createDemoDto;
     const res = await this.DemoRepository.findOne({ where: { name } });
     if (res) {
@@ -86,27 +85,24 @@ export class DemoService {
   }
 
   async running(createDemoDto: CreateDemoDto, req: any) {
-    console.log(
-      req.headers['sec-ch-ua'],
-      'headersheadersheadersheadersheadersheaders',
-    );
-    const { javascript } = createDemoDto;
+    const { javascript, css } = createDemoDto; 
+    // babel处理js
     let babelConfig: any = {
       presets: [
         [
           '@babel/preset-env',
           {
             targets: {
-              esmodules: true,
+              esmodules: true, //使用esmodules
             },
-            modules: false,
-            loose: false,
-            useBuiltIns: 'usage',
-            corejs: 3,
+            modules: false, // 不要将 ES6 模块转换为其他模块系统（如 CommonJS）
+            loose: false, // 使用严格模式进行转换
+            useBuiltIns: 'usage', // 当设置为"usage"时，Babel 会根据代码中实际使用的 ES2021 及之前的内置函数和方法，自动添加corejs模块的相应polyfill
+            corejs: 3, // 用于提供polyfill支持
             include: [
-              'transform-arrow-functions'
+              'transform-arrow-functions'  // 启用箭头函数
             ],
-            exclude: ['transform-async-to-generator', 'transform-block-scoping'], 
+            exclude: ['transform-async-to-generator', 'transform-block-scoping'],  // 排除转换插件
             shippedProposals: false,
             bugfixes: false,
             forceAllTransforms: false,
@@ -118,11 +114,11 @@ export class DemoService {
     };
     // babelConfig.presets[0][1].targets.browsers = [`${browserInfo.browser.name} ${browserInfo.browser.version}`]
     // babelConfig.presets[0][1].targets.browsers = [`${browserInfo.browser.name} ${browserInfo.browser.version}`]
-    const result = await babel.transform(javascript, babelConfig);
+    const jsResult = await babel.transform(javascript, babelConfig);
 
     return [
       {
-        javascript: result,
+        javascript: jsResult
       },
     ];
   }
